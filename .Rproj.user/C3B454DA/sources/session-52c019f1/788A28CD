@@ -1,0 +1,26 @@
+{
+    "id": "788A28CD",
+    "path": "C:/GitHub/travel-survey-explorer/ui.R",
+    "project_path": "ui.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1728506085282.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "64,23",
+        "scrollLine": "55"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1728574517,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1728574517170,
+    "read_only": false,
+    "read_only_alternatives": []
+}

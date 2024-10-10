@@ -1,0 +1,59 @@
+library(shiny)
+library(dplyr)
+library(gt)
+library(writexl)
+library(htmlwidgets)
+library(plotly)  # Required for rendering plots
+
+server <- function(input, output, session) {
+  
+  # Reactive dataset
+  dataset <- reactive({
+    req(input$travel, input$demographic, input$survey_year)  # Ensure inputs are available
+    
+    # Filter the dataset based on user input
+    summary_tbl %>%
+      filter(`Travel Category` == input$travel, 
+             `Demographic Category` == input$demographic, 
+             survey_year == input$survey_year)
+  })
+  
+  # Download the filtered data as an Excel file
+  output$downloadData <- downloadHandler(
+
+    filename = function() {
+      paste("Travel_Survey_Data_", Sys.Date(), ".xlsx", sep = "")
+    },
+    content = function(file) {
+      req(dataset())  # Ensure dataset is available
+      if (nrow(dataset()) == 0) {
+        stop("No data available for download.")  # Add error handling if dataset is empty
+      }
+      print("Starting to download data...")  # Debugging statement
+      write_xlsx(dataset(), path = file)  # Write the dataset to an Excel file
+      print("Data download complete.")  # Debugging statement
+    }
+  )
+  
+  # Download the plot as an HTML file
+  output$downloadPlot <- downloadHandler(
+    filename = function() {
+      paste("Travel_Survey_Plot_", Sys.Date(), ".html", sep = "")
+    },
+    content = function(file) {
+      req(dataset())  # Ensure dataset is available
+      if (nrow(dataset()) == 0) {
+        stop("No data available for download.")  # Add error handling if dataset is empty
+      }
+      print("Starting to download plot...")  # Debugging statement
+      
+      # Create the plot using the reactive dataset
+      plot <- interactive_column_chart(dataset(), x = 'travel_attribute', 
+                                       y = 'prop', fill = 'demographic_attribute')
+      
+      # Save the plot as an HTML widget
+      saveWidget(as_widget(plot), file)  
+      print("Plot download complete.")  # Debugging statement
+    }
+  )
+}

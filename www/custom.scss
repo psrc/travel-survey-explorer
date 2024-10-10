@@ -1,0 +1,36 @@
+/*-- scss:defaults --*/
+
+// fonts
+
+$font-family-sans-serif: "Poppins";
+
+// colors
+
+$navbar-bg: #4a0048;
+$navbar-fg: White;
+
+$link-color: #40BDB8;
+$hover-color: lighten($link-color, 40%);
+
+/*-- scss:rules --*/
+.card-header {
+  background-color: #C388C2;
+  color:#4a0048 ;
+}
+
+.nav-item > a:hover {
+  color: #F7A489;
+}
+
+.nav-link{
+  color: #588527;
+}
+
+
+div.callout-note.callout {
+  border-left-color: #00716c;
+}
+
+div.callout-note.callout-style-default>.callout-header {
+  background-color: #91268F;
+}
