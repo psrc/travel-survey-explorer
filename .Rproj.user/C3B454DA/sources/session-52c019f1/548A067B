@@ -3,7 +3,7 @@
     "path": "C:/GitHub/travel-survey-quarto-shiny/server.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "883619948",
+    "hash": "1674628114",
     "contents": "",
     "dirty": false,
     "created": 1728421181956.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "22,0",
-        "scrollLine": "4"
+        "cursorPosition": "59,0",
+        "scrollLine": "37"
     },
     "folds": "",
-    "lastKnownWriteTime": 1728574315,
+    "lastKnownWriteTime": 1728575231,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1728574315722,
+    "last_content_update": 1728575231121,
     "read_only": false,
     "read_only_alternatives": []
 }

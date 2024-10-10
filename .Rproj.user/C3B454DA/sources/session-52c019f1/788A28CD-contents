@@ -20,23 +20,19 @@ ui <- navbarPage(
       }
       
       .btn-primary {
-        background-color: #FFA500; /* Set the Update button to orange */
+        background-color: #FFA500; /* Set the buttons to orange */
         color: #ffffff; /* White text */
         border: none; /* Remove border */
         font-weight: 600;
-      }
-
-      #goButton {
-        margin-bottom: 15px; /* Add some space below the Update button */
+        margin: 5px;
       }
 
       #downloadData, #downloadPlot {
         margin-right: 10px; /* Add spacing between the download buttons */
-        margin-bottom: 15px;
       }
 
       .navbar-default {
-        background-color: #000000; /* Set navbar background to black */
+        background-color: #4a0048; 
         border-color: #000000; /* Remove border */
       }
       
@@ -56,7 +52,7 @@ ui <- navbarPage(
       }
       
       .navbar-default .navbar-nav > li.active > a {
-        background-color: #222222; /* Slightly different color for active links */
+        background-color: #E3C9E3; /* Slightly different color for active links */
         color: #ffffff; /* White text for active link */
       }
     "))
@@ -65,9 +61,9 @@ ui <- navbarPage(
   tabPanel("Dashboard",
            sidebarLayout(
              sidebarPanel(
-               selectInput('travel', 'Topic', unique(summary_tbl$`Travel Category`)), 
-               selectInput('demographic', 'Traveler Characteristics', unique(summary_tbl$`Demographic Category`)),
-               selectInput('survey_year', 'Year', unique(summary_tbl$survey_year)),
+               selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$`Travel Category`), selected = "Trip Mode"), 
+               selectInput('demographic', 'Traveler Demographics', choices = unique(summary_tbl$`Demographic Category`), selected = "Household Income"),
+               selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                
                # Download buttons with styling
                downloadButton("downloadData", "Download Table as Excel"),
@@ -88,4 +84,3 @@ ui <- navbarPage(
                            target = "_blank", style = "font-size: 20px; color: #FFA500; font-weight: bold;"))
   )
 )
-

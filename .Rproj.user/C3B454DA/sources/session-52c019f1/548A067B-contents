@@ -20,7 +20,7 @@ server <- function(input, output, session) {
   
   # Download the filtered data as an Excel file
   output$downloadData <- downloadHandler(
-
+    
     filename = function() {
       paste("Travel_Survey_Data_", Sys.Date(), ".xlsx", sep = "")
     },
