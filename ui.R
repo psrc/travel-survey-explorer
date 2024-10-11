@@ -4,6 +4,7 @@ library(writexl)
 library(htmlwidgets)
 library(plotly)  # Required for rendering plots
 
+# UI component
 ui <- navbarPage(
   title = tags$div(
     tags$h1("Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
@@ -18,17 +19,22 @@ ui <- navbarPage(
       body, .navbar, .form-control, .btn, .gt_table, .well {
         font-family: 'Poppins', sans-serif;
       }
-      
-      .btn-primary {
-        background-color: #FFA500; /* Set the buttons to orange */
-        color: #ffffff; /* White text */
-        border: none; /* Remove border */
-        font-weight: 600;
-        margin: 5px;
-      }
 
+      /* Styling the download buttons */
       #downloadData, #downloadPlot {
+        color: #000000 !important; /* Black font color */
+        background-color: #ffffff !important; /* White background */
+        font-weight: 600 !important; /* Bold text */
+        border: 1px solid #FFA500 !important; /* Orange border */
         margin-right: 10px; /* Add spacing between the download buttons */
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Hover effect for download buttons */
+      #downloadData:hover, #downloadPlot:hover {
+        color: #ffffff !important; /* White text on hover */
+        background-color: #4a0048 !important; /* Purple background on hover */
+        border: 1px solid #4a0048 !important; /* Border color change on hover */
       }
 
       .navbar-default {
@@ -61,13 +67,18 @@ ui <- navbarPage(
   tabPanel("Dashboard",
            sidebarLayout(
              sidebarPanel(
+               # Set initial values for the dropdowns
                selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$`Travel Category`), selected = "Trip Mode"), 
                selectInput('demographic', 'Traveler Demographics', choices = unique(summary_tbl$`Demographic Category`), selected = "Household Income"),
                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                
-               # Download buttons with styling
-               downloadButton("downloadData", "Download Table as Excel"),
-               downloadButton("downloadPlot", "Download Plot as HTML")
+               # Wrap download buttons in divs with ids for custom styling
+               div(id = "downloadDataContainer", 
+                   downloadButton("downloadData", "Download Table as Excel")
+               ),
+               div(id = "downloadPlotContainer", 
+                   downloadButton("downloadPlot", "Download Plot as HTML")
+               )
              ),
              mainPanel(
                plotlyOutput('plot'),
