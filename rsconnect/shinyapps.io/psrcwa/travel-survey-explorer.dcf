@@ -1,0 +1,10 @@
+name: travel-survey-explorer
+title:
+username: psrcwa
+account: psrcwa
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12980697
+bundleId: 9212709
+url: https://psrcwa.shinyapps.io/travel-survey-explorer/
+version: 1

@@ -12,18 +12,30 @@ dataset <- reactive({
   
   # Filter the dataset based on user input
   summary_tbl %>%
-    filter(`Travel Category` == input$travel, 
-           `Demographic Category` == input$demographic, 
+    filter(travel_category == input$travel, 
+           demographic_category == input$demographic, 
            survey_year == input$survey_year)
 })
 
-# Debugging: Check if the download buttons are being clicked
-observeEvent(input$downloadData, {
-  showModal(modalDialog("Download Table Button Clicked!"))
+
+# Render the filtered data as a gt table
+output$data <- render_gt({
+  req(dataset())  # Ensure dataset is available
+  
+  dataset() %>%
+    gt() %>%
+    tab_header(
+      title = "Travel Survey Data"
+    )
 })
 
-observeEvent(input$downloadPlot, {
-  showModal(modalDialog("Download Plot Button Clicked!"))
+output$plot <- renderPlotly({
+  req(dataset())  # Ensure dataset is available
+  
+  # Create the interactive Plotly plot
+  interactive_column_chart(dataset(), x = 'travel_attribute', 
+                           y = 'prop', fill = 'demographic_attribute') %>%
+    ggplotly()  # Convert ggplot to plotly
 })
 
 # Download the filtered data as an Excel file

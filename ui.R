@@ -68,8 +68,8 @@ ui <- navbarPage(
            sidebarLayout(
              sidebarPanel(
                # Set initial values for the dropdowns
-               selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$`Travel Category`), selected = "Trip Mode"), 
-               selectInput('demographic', 'Traveler Demographics', choices = unique(summary_tbl$`Demographic Category`), selected = "Household Income"),
+               selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$travel_category), selected = "Trip Mode"), 
+               selectInput('demographic', 'Traveler Demographics', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                
                # Wrap download buttons in divs with ids for custom styling
