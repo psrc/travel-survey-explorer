@@ -4,8 +4,11 @@ library(gt)
 library(psrcplot)
 library(tidyr)
 
-# Load the data (assuming the same data path is used)
-summary_tbl <- readRDS('data/hts_tbl_4_shiny.rds')
+vars <- c("travel_attribute" = "Travel Value", 
+          "demographic_attribute" = "Demographic Value", 
+          "prop" = "Share", 
+          "prop_moe" = "Share MOE", 
+          "est" = "Total")
 
 # Define the server logic
 server <- function(input, output, session) {
@@ -22,22 +25,38 @@ server <- function(input, output, session) {
   
   # Render the plotly chart
   output$plot <- renderPlotly({
-    interactive_column_chart(dataset(), x = 'travel_attribute', 
-                             y = 'prop', fill = 'demographic_attribute')
+    interactive_column_chart(dataset(), 
+                             x = 'travel_attribute', 
+                             y = 'prop', 
+                             fill = 'demographic_attribute')
+  })
+  
+  dataset_tbl <- reactive({
+    dataset() %>%
+      select(names(vars)) |> 
+      mutate(est = round(est, -3))
   })
   
   # Render the data table using `gt`
   output$data <- render_gt({
-    dataset() %>%
-      select('travel_attribute', 'demographic_attribute', 'prop', 'prop_moe', 'est') %>%
-      rename('Travel Value' = 'travel_attribute') %>%
-      rename('Demographic Value' = 'demographic_attribute') %>%
-      rename('Share' = 'prop') %>%
-      rename('Share MOE' = 'prop_moe') %>%
-      rename('Total' = 'est') %>%
-      mutate('Total' = round(Total, -3)) %>%
+    dataset_tbl() |> 
       gt() %>%
-      fmt_percent(columns = c('Share', 'Share MOE'), decimals = 0) %>%
-      fmt_number(columns = 'Total', decimals = 0)
+      cols_label(!!!vars) |> # passing the named vector
+      fmt_percent(columns = c('prop', 'prop_moe'), decimals = 0) %>%
+      fmt_number(columns = 'est', decimals = 0)
   })
+  
+  dataset_tbl_download <- reactive({
+    dataset_tbl() |> 
+      setNames(vars)
+  })
+    
+  output$downloadData <- downloadHandler(
+      filename = function() {
+        paste('data-', Sys.Date(), '.xlsx', sep='')
+      },
+      content = function(con) {
+        write_xlsx(dataset_tbl_download(), con)
+      }
+    )
 }
