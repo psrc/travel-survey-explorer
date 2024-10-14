@@ -1,9 +1,3 @@
-library(shiny)
-library(dplyr)
-library(gt)
-library(psrcplot)
-library(tidyr)
-
 vars <- c("travel_attribute" = "Travel Value", 
           "demographic_attribute" = "Demographic Value", 
           "prop" = "Share", 

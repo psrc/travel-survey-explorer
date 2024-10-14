@@ -1,9 +1,3 @@
-library(shiny)
-library(gt)
-library(writexl)
-library(htmlwidgets)
-library(plotly)  # Required for rendering plots
-
 ui <- navbarPage(
   title = tags$div(
     tags$h1("Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
