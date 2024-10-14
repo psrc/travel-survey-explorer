@@ -1,10 +1,3 @@
-library(shiny)
-library(gt)
-library(writexl)
-library(htmlwidgets)
-library(plotly)  # Required for rendering plots
-
-# UI component
 ui <- navbarPage(
   title = tags$div(
     tags$h1("Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
@@ -61,6 +54,20 @@ ui <- navbarPage(
         background-color: #E3C9E3; /* Slightly different color for active links */
         color: #ffffff; /* White text for active link */
       }
+
+      /* Styling for sidebar link */
+      #psrcLink {
+        font-size: 16px;
+        color: #FFA500 !important; /* Orange color for the link */
+        font-weight: bold;
+        text-align: center; /* Center the link */
+        display: block;
+        margin-top: 20px; /* Add spacing above the link */
+      }
+      
+      #psrcLink:hover {
+        color: #4a0048 !important; /* Purple color on hover */
+      }
     "))
   ),
   
@@ -78,6 +85,14 @@ ui <- navbarPage(
                ),
                div(id = "downloadPlotContainer", 
                    downloadButton("downloadPlot", "Download Plot as HTML")
+               ),
+               
+               # Add the PSRC Household Travel Survey link
+               tags$a(
+                 href = "https://www.psrc.org/our-work/household-travel-survey-program", 
+                 "Visit the PSRC Household Travel Survey Website", 
+                 id = "psrcLink", 
+                 target = "_blank"
                )
              ),
              mainPanel(
@@ -85,13 +100,6 @@ ui <- navbarPage(
                gt_output('data')
              )
            )
-  ),
-  
-  # New tab for the PSRC Household Travel Survey
-  tabPanel("PSRC Household Travel Survey",
-           tags$div(style = "text-align: center; margin-top: 20px;",
-                    tags$a(href = "https://www.psrc.org/our-work/household-travel-survey-program", 
-                           "Visit the PSRC Household Travel Survey Website", 
-                           target = "_blank", style = "font-size: 20px; color: #FFA500; font-weight: bold;"))
   )
 )
+

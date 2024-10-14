@@ -20,13 +20,17 @@ dataset <- reactive({
 
 # Render the filtered data as a gt table
 output$data <- render_gt({
-  req(dataset())  # Ensure dataset is available
-  
   dataset() %>%
+    select('travel_attribute', 'demographic_attribute', 'prop', 'prop_moe', 'est') %>%
+    rename('Travel Value' = 'travel_attribute') %>%
+    rename('Demographic Value' = 'demographic_attribute') %>%
+    rename('Share' = 'prop') %>%
+    rename('Share MOE' = 'prop_moe') %>%
+    rename('Total' = 'est') %>%
+    mutate('Total' = round(Total, -3)) %>%
     gt() %>%
-    tab_header(
-      title = "Travel Survey Data"
-    )
+    fmt_percent(columns = c('Share', 'Share MOE'), decimals = 0) %>%
+    fmt_number(columns = 'Total', decimals = 0)
 })
 
 output$plot <- renderPlotly({
@@ -34,7 +38,7 @@ output$plot <- renderPlotly({
   
   # Create the interactive Plotly plot
   interactive_column_chart(dataset(), x = 'travel_attribute', 
-                           y = 'prop', fill = 'demographic_attribute') %>%
+                           y = 'prop', fill = 'demographic_attribute', moe='prop_moe') %>%
     ggplotly()  # Convert ggplot to plotly
 })
 
@@ -62,8 +66,8 @@ output$downloadPlot <- downloadHandler(
     if (nrow(dataset()) == 0) {
       stop("No data available for download.")  # Add error handling if dataset is empty
     }
-    plot <- interactive_column_chart(dataset(), x = 'travel_attribute', 
-                                     y = 'prop', fill = 'demographic_attribute')
+    plot <- static_column_chart(dataset(), x = 'travel_attribute', 
+                                     y = 'prop', fill = 'demographic_attribute', moe='prop_moe')
     saveWidget(as_widget(plot), file)  # Save the plot as an HTML widget
   }
 )
