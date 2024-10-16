@@ -17,6 +17,13 @@ dataset <- reactive({
            survey_year == input$survey_year)
 })
 
+# Reactive dataset
+plot<- reactive({
+  dataset()
+  
+  interactive_column_chart(dataset(), x = 'travel_attribute', 
+                           y = 'prop', fill = 'demographic_attribute', moe='prop_moe')
+})
 
 # Render the filtered data as a gt table
 output$data <- render_gt({
@@ -35,12 +42,8 @@ output$data <- render_gt({
 
 
 output$plot <- renderPlotly({
-  req(dataset())  # Ensure dataset is available
+  plot()
   
-  # Create the interactive Plotly plot
-  interactive_column_chart(dataset(), x = 'travel_attribute', 
-                           y = 'prop', fill = 'demographic_attribute', moe='prop_moe') %>%
-    ggplotly()  # Convert ggplot to plotly
 })
 
 # Download the filtered data as an Excel file
@@ -67,9 +70,7 @@ output$downloadPlot <- downloadHandler(
     if (nrow(dataset()) == 0) {
       stop("No data available for download.")  # Add error handling if dataset is empty
     }
-    plot <- static_column_chart(dataset(), x = 'travel_attribute', 
-                                     y = 'prop', fill = 'demographic_attribute', moe='prop_moe')
-    saveWidget(as_widget(plot), file)  # Save the plot as an HTML widget
+    saveWidget(as_widget(plot()), file)  # Save the plot as an HTML widget
   }
 )
 }
