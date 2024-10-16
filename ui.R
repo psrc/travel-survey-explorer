@@ -12,61 +12,56 @@ ui <- navbarPage(
       body, .navbar, .form-control, .btn, .gt_table, .well {
         font-family: 'Poppins', sans-serif;
       }
+      
+      /* Styling for the contact info box */
+      .contact-info-box {
+        background-color: #4a0048; /* Purple background */
+        color: white; /* White text */
+        padding: 15px;
+        margin-top: 15px;
+        font-size: 14px;
+        border-radius: 5px;
+      }
 
       /* Styling the download buttons */
       #downloadData, #downloadPlot {
-        color: #000000 !important; /* Black font color */
-        background-color: #ffffff !important; /* White background */
-        font-weight: 600 !important; /* Bold text */
-        border: 1px solid #FFA500 !important; /* Orange border */
-        margin-right: 10px; /* Add spacing between the download buttons */
+        color: #000000 !important;
+        background-color: #ffffff !important;
+        font-weight: 600 !important;
+        border: 1px solid #FFA500 !important;
+        margin-right: 10px;
         transition: background-color 0.3s ease, color 0.3s ease;
       }
       
-      /* Hover effect for download buttons */
       #downloadData:hover, #downloadPlot:hover {
-        color: #ffffff !important; /* White text on hover */
-        background-color: #4a0048 !important; /* Purple background on hover */
-        border: 1px solid #4a0048 !important; /* Border color change on hover */
-      }
-
-      .navbar-default {
-        background-color: #4a0048; 
-        border-color: #000000; /* Remove border */
+        color: #ffffff !important;
+        background-color: #4a0048 !important;
+        border: 1px solid #4a0048 !important;
       }
       
-      .navbar-default .navbar-brand, 
+      .navbar-default {
+        background-color: #4a0048;
+        border-color: #000000;
+      }
+      
+      .navbar-default .navbar-brand,
       .navbar-default .navbar-brand:hover {
-        color: #ffffff; /* White color for the brand title */
+        color: #ffffff;
       }
       
       .navbar-default .navbar-nav > li > a {
-        color: #dddddd; /* Light gray color for nav links */
+        color: #dddddd;
         font-size: 16px;
       }
       
       .navbar-default .navbar-nav > li > a:hover {
-        color: #ffffff; /* Change to white on hover */
-        background-color: transparent; /* Remove hover background */
+        color: #ffffff;
+        background-color: transparent;
       }
       
       .navbar-default .navbar-nav > li.active > a {
-        background-color: #E3C9E3; /* Slightly different color for active links */
-        color: #ffffff; /* White text for active link */
-      }
-
-      /* Styling for sidebar link */
-      #psrcLink {
-        font-size: 16px;
-        color: #FFA500 !important; /* Orange color for the link */
-        font-weight: bold;
-        text-align: center; /* Center the link */
-        display: block;
-        margin-top: 20px; /* Add spacing above the link */
-      }
-      
-      #psrcLink:hover {
-        color: #4a0048 !important; /* Purple color on hover */
+        background-color: #E3C9E3;
+        color: #ffffff;
       }
     "))
   ),
@@ -74,25 +69,27 @@ ui <- navbarPage(
   tabPanel("Dashboard",
            sidebarLayout(
              sidebarPanel(
-               # Set initial values for the dropdowns
                selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$travel_category), selected = "Trip Mode"), 
                selectInput('demographic', 'Traveler Demographics', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                
-               # Wrap download buttons in divs with ids for custom styling
-               div(id = "downloadDataContainer", 
-                   downloadButton("downloadData", "Download Table as Excel")
-               ),
-               div(id = "downloadPlotContainer", 
-                   downloadButton("downloadPlot", "Download Plot as HTML")
-               ),
+               # Download buttons
+               downloadButton("downloadData", "Download Table as Excel"),
+               downloadButton("downloadPlot", "Download Plot as HTML"),
                
-               # Add the PSRC Household Travel Survey link
-               tags$a(
-                 href = "https://www.psrc.org/our-work/household-travel-survey-program", 
-                 "Visit the PSRC Household Travel Survey Website", 
-                 id = "psrcLink", 
-                 target = "_blank"
+               # External link in the sidebar
+               tags$div(style = "margin-top: 15px;",
+                        tags$a(href = "https://www.psrc.org/our-work/household-travel-survey-program", 
+                               "Visit the PSRC Household Travel Survey Website", 
+                               target = "_blank", style = "font-size: 16px; color: #FFA500; font-weight: bold;")),
+               
+               # Contact info box
+               tags$div(
+                 style = "margin-top: 20px; padding: 10px; background-color: #E6D1E6; color: #4a0048; border-radius: 5px; text-align: center;",
+                 tags$p("Contact Information:"),
+                 tags$a(href = "mailto:schildress@psrc.org", 
+                        "Suzanne Childress", 
+                        style = "color: #4a0048; font-weight: bold;")
                )
              ),
              mainPanel(
@@ -102,4 +99,3 @@ ui <- navbarPage(
            )
   )
 )
-

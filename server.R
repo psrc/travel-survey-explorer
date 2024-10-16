@@ -22,8 +22,8 @@ dataset <- reactive({
 output$data <- render_gt({
   dataset() %>%
     select('travel_attribute', 'demographic_attribute', 'prop', 'prop_moe', 'est') %>%
-    rename('Travel Value' = 'travel_attribute') %>%
-    rename('Demographic Value' = 'demographic_attribute') %>%
+    rename('Topic of Interest' = 'travel_attribute') %>%
+    rename('Traveler Characteristic' = 'demographic_attribute') %>%
     rename('Share' = 'prop') %>%
     rename('Share MOE' = 'prop_moe') %>%
     rename('Total' = 'est') %>%
@@ -32,6 +32,7 @@ output$data <- render_gt({
     fmt_percent(columns = c('Share', 'Share MOE'), decimals = 0) %>%
     fmt_number(columns = 'Total', decimals = 0)
 })
+
 
 output$plot <- renderPlotly({
   req(dataset())  # Ensure dataset is available
