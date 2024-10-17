@@ -23,6 +23,7 @@ geography <- data.frame(
 
 demography      <- data.frame(  
   query_var =  c("hhincome_broad",
+                 "race_category",
                  "hhsize",
                  "age",
                  "employment",
@@ -33,6 +34,7 @@ demography      <- data.frame(
                  "sexuality",
                  "rent_own"),
   report_var = c("hhincome_bin3",
+                 "race_category",
                  "hhsize_bin4",
                  "age_bin5",
                  "worker",
@@ -43,7 +45,8 @@ demography      <- data.frame(
                  "sexuality_bin3",
                  "rent_own_bin2"),
   label  =     c("Household Income",
-                 "Household Size",
+                 "Person Race",
+                 "Household Size,",
                  "Age Group",
                  "Worker Status",
                  "Disability Status",
