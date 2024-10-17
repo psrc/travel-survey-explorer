@@ -28,15 +28,16 @@ plot<- reactive({
 # Render the filtered data as a gt table
 output$data <- render_gt({
   dataset() %>%
-    select('travel_attribute', 'demographic_attribute', 'prop', 'prop_moe', 'est') %>%
+    select('travel_attribute', 'demographic_attribute', 'prop', 'prop_moe', 'est', 'count') %>%
     rename('Topic of Interest' = 'travel_attribute') %>%
     rename('Traveler Characteristic' = 'demographic_attribute') %>%
     rename('Share' = 'prop') %>%
-    rename('Share MOE' = 'prop_moe') %>%
+    rename('Share Margin of Error' = 'prop_moe') %>%
+    rename('Sample Size'='count')%>%
     rename('Total' = 'est') %>%
     mutate('Total' = round(Total, -3)) %>%
     gt() %>%
-    fmt_percent(columns = c('Share', 'Share MOE'), decimals = 0) %>%
+    fmt_percent(columns = c('Share', 'Share Margin of Error'), decimals = 0) %>%
     fmt_number(columns = 'Total', decimals = 0)
 })
 

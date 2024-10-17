@@ -46,7 +46,7 @@ demography      <- data.frame(
                  "rent_own_bin2"),
   label  =     c("Household Income",
                  "Person Race",
-                 "Household Size,",
+                 "Household Size",
                  "Age Group",
                  "Worker Status",
                  "Disability Status",
