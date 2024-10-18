@@ -5,6 +5,6 @@ account: psrcwa
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12980697
-bundleId: 9236919
+bundleId: 9241999
 url: https://psrcwa.shinyapps.io/travel-survey-explorer/
 version: 1

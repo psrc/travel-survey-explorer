@@ -14,9 +14,20 @@ server <- function(input, output, session) {
   # Reactive plot
   plot <- reactive({
     dataset()
-    
+    plot_title <- paste(input$travel, "by", input$demographic)
     interactive_column_chart(dataset(), x = 'travel_attribute', 
-                             y = 'prop', fill = 'demographic_attribute', moe='prop_moe')
+                             y = 'prop', fill = 'demographic_attribute', moe='prop_moe')%>%
+      layout(
+        title = list(
+          text = plot_title,
+          font = list(family = "Poppins", size = 20),  # Set font family and size
+          x = 0.5,  # Center the title
+          xanchor = "center",
+          yanchor = "top"
+        ),
+        margin = list(t = 60)  # Increase top margin to avoid cutoff
+      )
+    
   })
   
   # Render the filtered data as a gt table
@@ -43,7 +54,12 @@ server <- function(input, output, session) {
   # Download the filtered data as an Excel file
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste("Travel_Survey_Data_", Sys.Date(), ".xlsx", sep = "")
+      # Use user selections in the filename
+      topic_of_interest <- gsub(" ", "_", input$travel)  # Replace spaces with underscores for filename
+      traveler_characteristic <- gsub(" ", "_", input$demographic)
+      survey_year <- input$survey_year
+      
+      paste("Travel_Survey_Data_", topic_of_interest, "_", traveler_characteristic, "_", survey_year, "_", Sys.Date(), ".xlsx", sep = "")
     },
     content = function(file) {
       req(dataset())  # Ensure dataset is available
@@ -57,7 +73,12 @@ server <- function(input, output, session) {
   # Download the plot as an HTML file
   output$downloadPlot <- downloadHandler(
     filename = function() {
-      paste("Travel_Survey_Plot_", Sys.Date(), ".html", sep = "")
+      # Use user selections in the filename
+      topic_of_interest <- gsub(" ", "_", input$travel)  # Replace spaces with underscores for filename
+      traveler_characteristic <- gsub(" ", "_", input$demographic)
+      survey_year <- input$survey_year
+      
+      paste("Travel_Survey_Plot_", topic_of_interest, "_", traveler_characteristic, "_", survey_year, "_", Sys.Date(), ".html", sep = "")
     },
     content = function(file) {
       req(dataset())  # Ensure dataset is available
@@ -68,4 +89,3 @@ server <- function(input, output, session) {
     }
   )
 }
-
