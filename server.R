@@ -14,7 +14,7 @@ server <- function(input, output, session) {
   # Reactive plot
   plot <- reactive({
     dataset()
-    plot_title <- paste(input$travel, "by", input$demographic)
+    plot_title <- paste(input$travel, "by", input$demographic, "for", input$survey_year)
     interactive_column_chart(dataset(), x = 'travel_attribute', 
                              y = 'prop', fill = 'demographic_attribute', moe='prop_moe')%>%
       layout(
