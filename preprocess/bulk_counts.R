@@ -40,8 +40,9 @@ geography <- data.frame(
                  "Home in Seattle")
 ) %>% setDT()
 
-demography      <- data.frame(  
+demography      <- data.frame(
   report_var = c("hhincome_bin3",
+                 "race_category",
                  "hhsize_bin4",
                  "age_bin5",
                  "worker",
@@ -52,6 +53,7 @@ demography      <- data.frame(
                  "sexuality_bin3",
                  "rent_own_bin2"),
   label  =     c("Household Income",
+                 "Person Race",
                  "Household Size",
                  "Age Group",
                  "Worker Status",
