@@ -15,9 +15,10 @@ query_vars <- c("age",
                 "home_jurisdiction",
                 "mode_characterization",
                 "rent_own",
+                "race_category",
                 "sexuality",
                 "telecommute_freq",
-                #"vehicle_count",
+                "vehicle_count",
                 "workplace"
                 )
 
@@ -48,7 +49,7 @@ demography      <- data.frame(
                  "worker",
                  "disability_person",
                  "hh_race_category",
-                 #"vehicle_yn",
+                 "vehicle_yn",
                  "gender_bin3",
                  "sexuality_bin3",
                  "rent_own_bin2"),
@@ -59,7 +60,7 @@ demography      <- data.frame(
                  "Worker Status",
                  "Disability Status",
                  "Household Race", 
-                 #"Presence of vehicle",
+                 "Presence of vehicle",
                  "Gender Identity",
                  "Sexuality",
                  "Home Rent or Own")
@@ -93,7 +94,7 @@ hts_data %<>%
   hts_bin_dest_purpose() %>% 
   hts_bin_income() %>% 
   hts_bin_hhsize() %>% 
-  #  hts_bin_vehicle_count() %>% 
+  hts_bin_vehicle_count() %>% 
   hts_bin_age() %>% 
   hts_bin_worker() %>% 
   hts_bin_gender() %>% 
@@ -107,9 +108,29 @@ hts_data$hh %<>%
                                     !is.na(home_jurisdiction), NA_character_),
                               levels=c("Seattle"))]
 
+hts_data$hh %<>% setDT() %>% .[, `:=`(
+  veh_yn=factor(
+    fcase(grepl("^0",     as.character(vehicle_count)), "No vehicle",
+          grepl("^[1-9]", as.character(vehicle_count)), "1+ vehicle"),
+    levels= c("No vehicle","1+ vehicle")))]
+labelled::var_label(hts_data$hh$vehicle_count_bin4) <- "Number of vehicles"
+labelled::var_label(hts_data$hh$veh_yn) <- "Presence or absence of own vehicle(s)"   
+
+
 # Generate summaries ------------------
 trip_summary <- lapply(trip_combos, explorer_counts, analysis_unit="trip")
 person_summary <- lapply(person_combos, explorer_counts, analysis_unit="person")
-summary_labeled <- rbind(trip_summary, person_summary)
+summary_labeled <- rbind(rbindlist(trip_summary), rbindlist(person_summary))
 
 saveRDS(summary_labeled, 'hts_tbl_4_shiny.rds')
+
+hts_data$hh %<>% setDT() %>% .[, `:=`(
+  veh_yn=factor(
+    fcase(grepl("^0",     as.character(vehicle_count)), "No vehicle",
+          grepl("^[1-9]", as.character(vehicle_count)), "1+ vehicle"),
+    levels= c("No vehicle","1+ vehicle")))]
+labelled::var_label(hts_data$hh$vehicle_count_bin4) <- "Number of vehicles"
+labelled::var_label(hts_data$hh$veh_yn) <- "Presence or absence of own vehicle(s)"   
+
+
+
