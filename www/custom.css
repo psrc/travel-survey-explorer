@@ -1,0 +1,65 @@
+body, .navbar, .form-control, .btn, .gt_table, .well {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar Styling */
+.navbar-default {
+  background-color: #3A003A;
+  border-color: #000000;
+}
+
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+  color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #dddddd;
+  font-size: 16px;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #ffffff;
+  background-color: transparent;
+}
+
+.navbar-default .navbar-nav > li.active > a {
+  background-color:  #3A003A;
+  color: #ffffff;
+}
+
+/* Download Button Styling */
+#downloadData, #downloadPlot {
+  color: #ffffff !important;
+  background-color: #4a0048 !important;
+  font-weight: 600 !important;
+  border: 1px solid #F05A28 !important;
+  margin-right: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#downloadData:hover, #downloadPlot:hover {
+  color: #ffffff !important;
+  background-color: #F05A28 !important;
+  border: 1px solid #ffffff !important;
+}
+
+/* Contact Info Box Styling */
+.contact-info-box {
+  background-color: #E3C9E3;
+  color: #4a0048;
+  padding: 15px;
+  margin-top: 15px;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.contact-info-box a {
+  color: #4a0048;
+  font-weight: bold;
+}
+
+/* Sidebar Link Styling */
+.sidebar-link {
+  color:  #F05A28!important;
+  font-weight: bold;
+}
