@@ -35,9 +35,11 @@ person_topics <- data.frame(
 ) %>% setDT()
 
 geography <- data.frame(
-  report_var = c("home_county", 
+  report_var = c("regionwide",
+                 "home_county", 
                  "home_in_seattle"),
-  label =      c("Home County",
+  label =      c("Regionwide",
+                 "Home County",
                  "Home in Seattle")
 ) %>% setDT()
 
@@ -123,6 +125,7 @@ hts_data %<>%
   hts_bin_telecommute_trichotomy()
 
 hts_data$hh %<>% setDT() %>% .[, `:=`(
+  regionwide="Regionwide",
   home_in_seattle=factor(
     fcase(home_jurisdiction=="Seattle", "Seattle",
           !is.na(home_jurisdiction), NA_character_),
