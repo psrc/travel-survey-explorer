@@ -74,7 +74,7 @@ trip_combos <- expand.grid(c(geography$report_var, demography$report_var), trip_
 person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
   transpose() %>% lapply(c)
 
-trip_x_trip_combos <- expand.grid("dest_purpose_bin4", c("mode_basic","mode_acc_basic"))
+combined_lookup <- rbind(trip_topics, person_topics, geography, demography)
 
 
 # Helper functions --------------------
@@ -82,7 +82,7 @@ trip_x_trip_combos <- expand.grid("dest_purpose_bin4", c("mode_basic","mode_acc_
 explorer_stats <- function(grpvars, analysis_unit=day, stat_var=NULL){
   pfx <- c("demographic_", "travel_")
   sfx <- c("category", "attribute")
-  dvar <- rbind(demography, geography)[report_var==(grpvars[[1]])]$label
+  dvar <- combined_lookup[report_var==(grpvars[[1]])]$label
   tvar <- if(!rlang::is_empty(stat_var)){
     if(stat_var=="num_trips_wtd"){
      "Average daily trips per person"
@@ -90,7 +90,7 @@ explorer_stats <- function(grpvars, analysis_unit=day, stat_var=NULL){
       "Average daily VMT per person"
     }
   }else{
-    rbind(trip_topics, person_topics)[report_var==(grpvars[[2]])]$label
+    combined_lookup[report_var==(grpvars[[2]])]$label
   }
     
   hts_data2 <- copy(hts_data)
@@ -144,4 +144,4 @@ summary_labeled <- rbind(rbindlist(trip_summary), rbindlist(person_summary))
 #trip_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="num_trips_wtd")
 #vmt_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt__wtd")
 
-saveRDS(summary_labeled, 'hts_tbl_4_shiny.rds')
+saveRDS(summary_labeled, 'data/hts_tbl_4_shiny.rds')
