@@ -15,7 +15,7 @@ ui <- navbarPage(
              sidebarPanel(
                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$travel_category), selected = "Trip Mode"), 
-               selectInput('demographic', 'Traveler Demographics', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
+               selectInput('demographic', 'Traveler Demographics or Second Topic', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
                
                # Download buttons
                downloadButton("downloadData", "Download Table as Excel"),
