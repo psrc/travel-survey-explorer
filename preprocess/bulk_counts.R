@@ -69,8 +69,9 @@ demography      <- data.frame(
                  "Home Rent or Own")
 ) %>% setDT()
 
-trip_combos <- expand.grid(c(geography$report_var, demography$report_var), trip_topics$report_var) %>%
-  rbind(expand.grid("dest_purpose_bin4",c("mode_basic","mode_acc_basic"))) %>%
+trip_combos <- c(geography$report_var, demography$report_var, person_topics$report_var) %>% 
+  expand.grid(trip_topics$report_var) %>%
+  rbind(expand.grid("dest_purpose_bin4", c("mode_basic","transit_mode_acc"))) %>%
   rbind(expand.grid(person_topics$report_var, trip_topics$report_var)) %>%
 #  rbind(data.frame(Var1="dest_purpose_bin4",Var2="mode_basic")) %>% 
   transpose() %>% lapply(c)
@@ -78,7 +79,8 @@ trip_combos <- expand.grid(c(geography$report_var, demography$report_var), trip_
 person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
   transpose() %>% lapply(c)
 
-combined_lookup <- rbind(trip_topics, person_topics, geography, demography)
+combined_lookup <- rbind(trip_topics, person_topics, geography, demography, 
+                         data.frame(report_var="transit_mode_acc", label="Transit Access Mode"))
 
 
 # Helper functions --------------------
@@ -124,7 +126,7 @@ hts_data %<>%
   hts_bin_sexuality() %>%
   hts_bin_rent_own() %>%
   hts_bin_mode() %>%
-  hts_bin_mode_acc() %>%
+  hts_bin_transit_mode_acc() %>%
   hts_bin_telecommute_trichotomy()
 
 hts_data$hh %<>% setDT() %>% .[, `:=`(
