@@ -13,6 +13,7 @@ query_vars <- c("age",
                 "hhsize",
                 "home_county", 
                 "home_jurisdiction",
+                "mode_acc",
                 "mode_characterization",
                 "rent_own",
                 "race_category",
@@ -25,7 +26,7 @@ query_vars <- c("age",
 trip_topics <- data.frame(  
   report_var = c("mode_basic",
                  "dest_purpose_bin4"),
-  label =      c("Trip Mode", 
+  label =      c("Trip Mode",
                  "Trip Purpose")
 ) %>% setDT()
 
@@ -69,8 +70,9 @@ demography      <- data.frame(
 ) %>% setDT()
 
 trip_combos <- expand.grid(c(geography$report_var, demography$report_var), trip_topics$report_var) %>%
-#  rbind(expand.grid("dest_purpose_bin4",c("mode_basic","mode_acc_basic"))) # mode_acc_basic not coded yet
-  rbind(data.frame(Var1="dest_purpose_bin4",Var2="mode_basic")) %>% 
+  rbind(expand.grid("dest_purpose_bin4",c("mode_basic","mode_acc_basic"))) %>%
+  rbind(expand.grid(person_topics$report_var, trip_topics$report_var)) %>%
+#  rbind(data.frame(Var1="dest_purpose_bin4",Var2="mode_basic")) %>% 
   transpose() %>% lapply(c)
   
 person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
@@ -122,6 +124,7 @@ hts_data %<>%
   hts_bin_sexuality() %>%
   hts_bin_rent_own() %>%
   hts_bin_mode() %>%
+  hts_bin_mode_acc() %>%
   hts_bin_telecommute_trichotomy()
 
 hts_data$hh %<>% setDT() %>% .[, `:=`(
