@@ -84,26 +84,6 @@ demography      <- data.frame(
                  "Home Rent or Own")
 ) %>% setDT()
 
-trip_combos <- c(geography$report_var, demography$report_var, person_topics$report_var) %>% 
-  expand.grid(trip_topics$report_var) %>%
-  rbind(expand.grid(c("dest_purpose_bin4","consolidated_transit_pass"), c("mode_basic","transit_mode_acc"))) %>%
-  rbind(expand.grid(person_topics$report_var, trip_topics$report_var)) %>%
-#  rbind(data.frame(Var1="dest_purpose_bin4",Var2="mode_basic")) %>% 
-  transpose() %>% lapply(c)
-  
-person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
-  transpose() %>% lapply(c)
-
-household_combos <- demography$report_var %>%
-  dplyr::case_match("race_category" ~"hh_race_category", .default=demography$report_var) %>%
-  .[demography$report_var %in% colnames(hts_data$hh)] %>%
-  c(geography$report_var) %>%  expand.grid(household_topics$report_var) %>%
-  transpose() %>% lapply(c)
-
-combined_lookup <- rbind(trip_topics, person_topics, household_topics, geography, demography, 
-                         data.frame(report_var="transit_mode_acc", label="Transit Access Mode"),
-                         data.frame(report_var="hh_race_category", label="Household Race"))
-
 # Helper functions --------------------
 
 explorer_stats <- function(grpvars, analysis_unit=day, stat_var=NULL){
@@ -135,6 +115,7 @@ explorer_stats <- function(grpvars, analysis_unit=day, stat_var=NULL){
 }
 
 # Retrieve HTS data & add variables ---
+
 hts_data <- get_psrc_hts(survey_vars=query_vars)
 hts_data %<>% 
   hts_bin_dest_purpose() %>% 
@@ -168,12 +149,35 @@ hts_data$person %<>% setDT() %>% .[,
     fcase(grepl("^Some [oO]ther", as.character(race_category)), NA_character_,
           !is.na(race_category), as.character(race_category)))]
 
+# Create combinations -----------------
+
+trip_combos <- c(geography$report_var, demography$report_var, person_topics$report_var) %>% 
+  expand.grid(trip_topics$report_var) %>%
+  rbind(expand.grid(c("dest_purpose_bin4","consolidated_transit_pass"), c("mode_basic","transit_mode_acc"))) %>%
+  rbind(expand.grid(person_topics$report_var, trip_topics$report_var)) %>%
+  #  rbind(data.frame(Var1="dest_purpose_bin4",Var2="mode_basic")) %>% 
+  transpose() %>% lapply(c)
+
+person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
+  transpose() %>% lapply(c)
+
+household_combos <- demography$report_var %>%
+  dplyr::case_match("race_category" ~"hh_race_category", .default=demography$report_var) %>%
+  .[demography$report_var %in% colnames(hts_data$hh)] %>%
+  c(geography$report_var) %>%  expand.grid(household_topics$report_var) %>%
+  transpose() %>% lapply(c)
+
+combined_lookup <- rbind(trip_topics, person_topics, household_topics, geography, demography, 
+                         data.frame(report_var="transit_mode_acc", label="Transit Access Mode"),
+                         data.frame(report_var="hh_race_category", label="Household Race"))
+
 # Generate summaries ------------------
-trip_summary <- lapply(trip_combos, explorer_stats, analysis_unit="trip")
-person_summary <- lapply(person_combos, explorer_stats, analysis_unit="person")
-household_summary <- lapply(household_combos, explorer_stats, analysis_unit="hh")
-summary_labeled <- rbind(lapply(c(trip_summary, person_summary, household_summary), rbindlist))
-#trip_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="num_trips_wtd")
-#vmt_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt_wtd")
+rs           <- list()
+rs$trip      <- lapply(trip_combos, explorer_stats, analysis_unit="trip")
+rs$person    <- lapply(person_combos, explorer_stats, analysis_unit="person")
+rs$household <- lapply(household_combos, explorer_stats, analysis_unit="hh")
+#rs$trip_rate <- lapply(trip_topics$report_var, explorer_stats, stat_var="num_trips_wtd")
+#rs$vmt_rate  <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt_wtd")
+summary_labeled <- lapply(rs, rbindlist) %>% rbindlist()
 
 saveRDS(summary_labeled, 'data/hts_tbl_4_shiny.rds')
