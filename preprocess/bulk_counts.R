@@ -1,6 +1,5 @@
 library(magrittr)
 library(psrc.travelsurvey)
-library(stringr)
 library(data.table)
 
 query_vars <- c("age",
@@ -69,7 +68,6 @@ demography      <- data.frame(
                  "age_bin5",
                  "worker",
                  "disability_person",
-                 "hh_race_category",
                  "veh_yn",
                  "gender_bin3",
                  "sexuality_bin3",
@@ -80,7 +78,6 @@ demography      <- data.frame(
                  "Age Group",
                  "Worker Status",
                  "Disability Status",
-                 "Household Race", 
                  "Presence of vehicle",
                  "Gender Identity",
                  "Sexuality",
@@ -97,12 +94,15 @@ trip_combos <- c(geography$report_var, demography$report_var, person_topics$repo
 person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
   transpose() %>% lapply(c)
 
-household_combos <- expand.grid(c(geography$report_var, demography$report_var), household_topics$report_var) %>%
+household_combos <- demography$report_var %>%
+  dplyr::case_match("race_category" ~"hh_race_category", .default=demography$report_var) %>%
+  .[demography$report_var %in% colnames(hts_data$hh)] %>%
+  c(geography$report_var) %>%  expand.grid(household_topics$report_var) %>%
   transpose() %>% lapply(c)
 
 combined_lookup <- rbind(trip_topics, person_topics, household_topics, geography, demography, 
-                         data.frame(report_var="transit_mode_acc", label="Transit Access Mode"))
-
+                         data.frame(report_var="transit_mode_acc", label="Transit Access Mode"),
+                         data.frame(report_var="hh_race_category", label="Household Race"))
 
 # Helper functions --------------------
 
@@ -168,13 +168,12 @@ hts_data$person %<>% setDT() %>% .[,
     fcase(grepl("^Some [oO]ther", as.character(race_category)), NA_character_,
           !is.na(race_category), as.character(race_category)))]
 
-
 # Generate summaries ------------------
 trip_summary <- lapply(trip_combos, explorer_stats, analysis_unit="trip")
 person_summary <- lapply(person_combos, explorer_stats, analysis_unit="person")
-#household_summary <- lapply(household_combos, explorer_stats, analysis_unit="hh")
-summary_labeled <- rbind(lapply(c(trip_summary, person_summary), rbindlist)) #, household_summary
+household_summary <- lapply(household_combos, explorer_stats, analysis_unit="hh")
+summary_labeled <- rbind(lapply(c(trip_summary, person_summary, household_summary), rbindlist))
 #trip_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="num_trips_wtd")
-#vmt_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt__wtd")
+#vmt_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt_wtd")
 
 saveRDS(summary_labeled, 'data/hts_tbl_4_shiny.rds')
