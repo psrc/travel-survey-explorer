@@ -4,9 +4,12 @@ library(stringr)
 library(data.table)
 
 query_vars <- c("age",
+                "bike_frequency",
                 "employment",
+                "consolidated_transit_pass",
                 "dest_purpose",
                 "disability_person",
+                "displaced",
                 "gender",
                 "hhincome_broad",
                 "hh_race_category",
@@ -19,20 +22,35 @@ query_vars <- c("age",
                 "race_category",
                 "sexuality",
                 "telecommute_freq",
+                "transit_frequency",
                 "vehicle_count",
+                "walk_frequency",
                 "workplace"
                 )
 
 trip_topics <- data.frame(  
   report_var = c("mode_basic",
-                 "dest_purpose_bin4"),
+                 "dest_purpose_bin4",
+                 "consolidated_transit_pass"),
   label =      c("Trip Mode",
-                 "Trip Purpose")
+                 "Trip Purpose",
+                 "Transit Pass")
 ) %>% setDT()
 
 person_topics <- data.frame(  
-  report_var = c("telecommute_trichotomy"),
-  label =      c("Telecommute Status")
+  report_var = c("telecommute_trichotomy",
+                 "transit_frequency_bin4",
+                 "walk_frequency_bin4",
+                 "bike_frequency_bin4"),
+  label =      c("Telecommute Status",
+                 "Frequency of transit use",
+                 "Frequency of walking",
+                 "Frequency of biking")
+) %>% setDT()
+
+household_topics <- data.frame(  
+  report_var = c("displaced"),
+  label =      c("Residential Displacement")
 ) %>% setDT()
 
 geography <- data.frame(
@@ -71,7 +89,7 @@ demography      <- data.frame(
 
 trip_combos <- c(geography$report_var, demography$report_var, person_topics$report_var) %>% 
   expand.grid(trip_topics$report_var) %>%
-  rbind(expand.grid("dest_purpose_bin4", c("mode_basic","transit_mode_acc"))) %>%
+  rbind(expand.grid(c("dest_purpose_bin4","consolidated_transit_pass"), c("mode_basic","transit_mode_acc"))) %>%
   rbind(expand.grid(person_topics$report_var, trip_topics$report_var)) %>%
 #  rbind(data.frame(Var1="dest_purpose_bin4",Var2="mode_basic")) %>% 
   transpose() %>% lapply(c)
@@ -79,7 +97,10 @@ trip_combos <- c(geography$report_var, demography$report_var, person_topics$repo
 person_combos <- expand.grid(c(geography$report_var, demography$report_var), person_topics$report_var) %>%
   transpose() %>% lapply(c)
 
-combined_lookup <- rbind(trip_topics, person_topics, geography, demography, 
+household_combos <- expand.grid(c(geography$report_var, demography$report_var), household_topics$report_var) %>%
+  transpose() %>% lapply(c)
+
+combined_lookup <- rbind(trip_topics, person_topics, household_topics, geography, demography, 
                          data.frame(report_var="transit_mode_acc", label="Transit Access Mode"))
 
 
@@ -127,7 +148,10 @@ hts_data %<>%
   hts_bin_rent_own() %>%
   hts_bin_mode() %>%
   hts_bin_transit_mode_acc() %>%
-  hts_bin_telecommute_trichotomy()
+  hts_bin_telecommute_trichotomy() %>%
+  hts_bin_transit_frequency() %>%
+  hts_bin_walk_frequency() %>%
+  hts_bin_bike_frequency()
 
 hts_data$hh %<>% setDT() %>% .[, `:=`(
   regionwide="Regionwide",
@@ -148,7 +172,8 @@ hts_data$person %<>% setDT() %>% .[,
 # Generate summaries ------------------
 trip_summary <- lapply(trip_combos, explorer_stats, analysis_unit="trip")
 person_summary <- lapply(person_combos, explorer_stats, analysis_unit="person")
-summary_labeled <- rbind(rbindlist(trip_summary), rbindlist(person_summary))
+#household_summary <- lapply(household_combos, explorer_stats, analysis_unit="hh")
+summary_labeled <- rbind(lapply(c(trip_summary, person_summary), rbindlist)) #, household_summary
 #trip_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="num_trips_wtd")
 #vmt_rate_summary <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt__wtd")
 
