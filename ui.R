@@ -16,6 +16,19 @@ ui <- navbarPage(
                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$travel_category), selected = "Trip Mode"), 
                selectInput('demographic', 'Traveler Demographics or Second Topic', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
+               # Add custom hover effect for the button within the UI
+               tags$head(
+                 tags$style(HTML("
+                  #reset_filters:hover {
+                  background-color: #4D4D4D; /* Darker gray for hover */
+                  cursor: pointer;
+                  }
+                      "))
+               ),
+               actionButton("reset_filters", "Reset Filters", class = "btn", 
+                            style = "background-color: #6E6E6E; color: white; border: none; font-weight: bold;")
+               
+               ,
                
                # Download buttons
                downloadButton("downloadData", "Download Table as Excel"),

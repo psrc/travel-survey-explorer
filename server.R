@@ -72,6 +72,15 @@ server <- function(input, output, session) {
     
     updateSelectInput(session, 'survey_year', choices = available_years, selected = input$survey_year)
   })
+  
+  observeEvent(input$reset_filters, {
+    # Reset each input to its default state or the full list of choices
+    updateSelectInput(session, "survey_year", selected = NULL)
+    updateSelectInput(session, "travel", selected = NULL)
+    updateSelectInput(session, "demographic", selected = NULL)
+    
+    # Optionally, you can clear any reactive states if necessary
+  })
 
   # Reactive dataset based on user input
   dataset <- reactive({
