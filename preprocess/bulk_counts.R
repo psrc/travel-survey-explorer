@@ -144,6 +144,11 @@ hts_data$hh %<>% setDT() %>% .[, `:=`(
     fcase(grepl("^Some [oO]ther", as.character(hh_race_category)), NA_character_,
           !is.na(hh_race_category), as.character(hh_race_category))))]
 
+hts_data$hh %<>% merge(hts_data$person[, 
+  .(hh_workers=sum(fcase(as.character(worker)=="Worker", 1, !is.na(worker), 0)), 
+    hh_children=sum(fcase(as.character(age_bin3)=="Under 18 Years", 1, !is.na(age_bin3), 0))), 
+  by=hh_id], by="hh_id")
+
 hts_data$person %<>% setDT() %>% .[,
   race_category:=factor(
     fcase(grepl("^Some [oO]ther", as.character(race_category)), NA_character_,
@@ -162,14 +167,16 @@ person_combos <- expand.grid(c(geography$report_var, demography$report_var), per
   transpose() %>% lapply(c)
 
 household_combos <- demography$report_var %>%
-  dplyr::case_match("race_category" ~"hh_race_category", .default=demography$report_var) %>%
   .[demography$report_var %in% colnames(hts_data$hh)] %>%
+  c("hh_race_category", "hh_workers", "hh_children") %>%
   c(geography$report_var) %>%  expand.grid(household_topics$report_var) %>%
   transpose() %>% lapply(c)
 
 combined_lookup <- rbind(trip_topics, person_topics, household_topics, geography, demography, 
                          data.frame(report_var="transit_mode_acc", label="Transit Access Mode"),
-                         data.frame(report_var="hh_race_category", label="Household Race"))
+                         data.frame(report_var="hh_race_category", label="Household Race"),
+                         data.frame(report_var="hh_workers",       label="Worker Count"),
+                         data.frame(report_var="hh_children",      label="Child Count"))
 
 # Generate summaries ------------------
 rs           <- list()
@@ -178,6 +185,6 @@ rs$person    <- lapply(person_combos, explorer_stats, analysis_unit="person")
 rs$household <- lapply(household_combos, explorer_stats, analysis_unit="hh")
 #rs$trip_rate <- lapply(trip_topics$report_var, explorer_stats, stat_var="num_trips_wtd")
 #rs$vmt_rate  <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt_wtd")
-summary_labeled <- lapply(rs, rbindlist) %>% rbindlist()
+summary_labeled <- suppressWarnings(lapply(rs, rbindlist) %>% rbindlist())
 
 saveRDS(summary_labeled, 'data/hts_tbl_4_shiny.rds')
