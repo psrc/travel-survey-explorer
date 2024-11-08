@@ -33,7 +33,7 @@ trip_topics <- data.frame(
                  "consolidated_transit_pass"),
   label =      c("Trip Mode",
                  "Trip Purpose",
-                 "Transit Pass")
+                 "Work Offers Transit Pass")
 ) %>% setDT()
 
 person_topics <- data.frame(  
