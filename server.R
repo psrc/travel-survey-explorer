@@ -1,15 +1,87 @@
 server <- function(input, output, session) {
+  # Reactive expressions for available choices based on any single or two combinations of inputs
   
-  # Reactive dataset
-  dataset <- reactive({
-    req(input$travel, input$demographic, input$survey_year)  # Ensure inputs are available
+  observe({
+    # Get available travel categories based on demographic and survey year
+    if (!is.null(input$demographic) & !is.null(input$survey_year)) {
+      available_travel_categories <- summary_tbl %>%
+        filter(demographic_category == input$demographic & survey_year == input$survey_year) %>%
+        distinct(travel_category) %>%
+        pull(travel_category)
+    } else if (!is.null(input$demographic)) {
+      available_travel_categories <- summary_tbl %>%
+        filter(demographic_category == input$demographic) %>%
+        distinct(travel_category) %>%
+        pull(travel_category)
+    } else if (!is.null(input$survey_year)) {
+      available_travel_categories <- summary_tbl %>%
+        filter(survey_year == input$survey_year) %>%
+        distinct(travel_category) %>%
+        pull(travel_category)
+    } else {
+      available_travel_categories <- unique(summary_tbl$travel_category)
+    }
     
-    # Filter the dataset based on user input
+    updateSelectInput(session, 'travel', choices = available_travel_categories, selected = input$travel)
+  })
+  
+  observe({
+    # Get available demographic categories based on travel and survey year
+    if (!is.null(input$travel) & !is.null(input$survey_year)) {
+      available_demographics <- summary_tbl %>%
+        filter(travel_category == input$travel & survey_year == input$survey_year) %>%
+        distinct(demographic_category) %>%
+        pull(demographic_category)
+    } else if (!is.null(input$travel)) {
+      available_demographics <- summary_tbl %>%
+        filter(travel_category == input$travel) %>%
+        distinct(demographic_category) %>%
+        pull(demographic_category)
+    } else if (!is.null(input$survey_year)) {
+      available_demographics <- summary_tbl %>%
+        filter(survey_year == input$survey_year) %>%
+        distinct(demographic_category) %>%
+        pull(demographic_category)
+    } else {
+      available_demographics <- unique(summary_tbl$demographic_category)
+    }
+    
+    updateSelectInput(session, 'demographic', choices = available_demographics, selected = input$demographic)
+  })
+  
+  observe({
+    # Get available survey years based on travel and demographic
+    if (!is.null(input$travel) & !is.null(input$demographic)) {
+      available_years <- summary_tbl %>%
+        filter(travel_category == input$travel & demographic_category == input$demographic) %>%
+        distinct(survey_year) %>%
+        pull(survey_year)
+    } else if (!is.null(input$travel)) {
+      available_years <- summary_tbl %>%
+        filter(travel_category == input$travel) %>%
+        distinct(survey_year) %>%
+        pull(survey_year)
+    } else if (!is.null(input$demographic)) {
+      available_years <- summary_tbl %>%
+        filter(demographic_category == input$demographic) %>%
+        distinct(survey_year) %>%
+        pull(survey_year)
+    } else {
+      available_years <- unique(summary_tbl$survey_year)
+    }
+    
+    updateSelectInput(session, 'survey_year', choices = available_years, selected = input$survey_year)
+  })
+
+  # Reactive dataset based on user input
+  dataset <- reactive({
+    req(input$travel, input$demographic, input$survey_year)
     summary_tbl %>%
-      filter(travel_category == input$travel, 
-             demographic_category == input$demographic, 
+      filter(travel_category == input$travel,
+             demographic_category == input$demographic,
              survey_year == input$survey_year)
   })
+  
   
   # Reactive plot
   plot <- reactive({
@@ -89,3 +161,4 @@ server <- function(input, output, session) {
     }
   )
 }
+
