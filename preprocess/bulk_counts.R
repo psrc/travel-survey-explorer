@@ -147,7 +147,9 @@ hts_data$hh %<>% setDT() %>% .[, `:=`(
 hts_data$hh %<>% merge(hts_data$person[, 
   .(hh_workers=sum(fcase(as.character(worker)=="Worker", 1, !is.na(worker), 0)), 
     hh_children=sum(fcase(as.character(age_bin3)=="Under 18 Years", 1, !is.na(age_bin3), 0))), 
-  by=hh_id], by="hh_id")
+  by=hh_id], by="hh_id") %>% 
+  .[,`:=`(hh_workers=factor(fcase(hh_workers>1, "2+", !is.na(hh_workers), as.character(hh_workers))),
+          hh_children=factor(fcase(hh_children>1, "4+", !is.na(hh_children), as.character(hh_children))))]
 
 hts_data$person %<>% setDT() %>% .[,
   race_category:=factor(
