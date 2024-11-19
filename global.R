@@ -5,7 +5,7 @@ library(gt)
 library(plotly)
 library(psrcplot)
 library(tidyr)
-library(writexl)
+library(openxlsx)
 library(htmlwidgets)
 
 # Load the data (assuming the same data path is used)
