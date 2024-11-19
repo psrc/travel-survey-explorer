@@ -1,13 +1,31 @@
 ui <- navbarPage(
   title = tags$div(
-    tags$h1("Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
+    tags$h1("BETA Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
     tags$h4("A Dashboard for Analyzing Travel Behavior", style = "font-size: 16px; color: #76787A; margin-top: 5px; font-family: 'Poppins', sans-serif;")
   ),
   windowTitle = "Travel Survey Explorer",
   
   # Custom CSS and Google Fonts for the navbar and general styling
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
+    tags$style(HTML("
+      .full-width-table {
+        width: 100%;
+        margin-top: 20px;
+      }
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 150px); /* Adjust this value based on your header height */
+      }
+      #plot {
+        flex: 1;
+        margin-bottom: 20px;
+      }
+      #data {
+        flex: 0;
+      }
+    "))
   ),
   
   tabPanel("Dashboard",
@@ -16,19 +34,6 @@ ui <- navbarPage(
                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
                selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$travel_category), selected = "Trip Mode"), 
                selectInput('demographic', 'Traveler Demographics or Second Topic', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
-               # Add custom hover effect for the button within the UI
-               tags$head(
-                 tags$style(HTML("
-                  #reset_filters:hover {
-                  background-color: #4D4D4D; /* Darker gray for hover */
-                  cursor: pointer;
-                  }
-                      "))
-               ),
-               actionButton("reset_filters", "Reset Filters", class = "btn", 
-                            style = "background-color: #6E6E6E; color: white; border: none; font-weight: bold;")
-               
-               ,
                
                # Download buttons
                downloadButton("downloadData", "Download Table as Excel"),
@@ -50,8 +55,11 @@ ui <- navbarPage(
                )
              ),
              mainPanel(
-               plotlyOutput('plot'),  # Interactive Plot
-               gt_output('data')  # Update this to gt_output for the gt table
+               tags$div(
+                 class = "main-content",
+                 plotlyOutput('plot'),  # Interactive Plot
+                 tags$div(gt_output('data'), class = "full-width-table")  # Expanded table
+               )
              )
            )
   ),
@@ -94,6 +102,7 @@ ui <- navbarPage(
            )
   )
 )
+
 
 
 

@@ -33,7 +33,7 @@ trip_topics <- data.frame(
                  "consolidated_transit_pass"),
   label =      c("Trip Mode",
                  "Trip Purpose",
-                 "Transit Pass")
+                 "Work Provides Transit Pass")
 ) %>% setDT()
 
 person_topics <- data.frame(  
@@ -187,4 +187,9 @@ rs$household <- lapply(household_combos, explorer_stats, analysis_unit="hh")
 #rs$vmt_rate  <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt_wtd")
 summary_labeled <- suppressWarnings(lapply(rs, rbindlist) %>% rbindlist())
 
-saveRDS(summary_labeled, 'data/hts_tbl_4_shiny.rds')
+summary_filtered<-summary_labeled%>%filter(!travel_category  %in%  c("Residential Displacement", 
+                                                         "Frequency of transit use",
+                                                         "Frequency of walking",
+                                                         "Frequency of biking"))
+
+saveRDS(summary_filtered, 'data/hts_tbl_4_shiny.rds')
