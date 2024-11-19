@@ -10,4 +10,3 @@ library(htmlwidgets)
 
 # Load the data (assuming the same data path is used)
 summary_tbl <- readRDS('data/hts_tbl_4_shiny.rds')
-

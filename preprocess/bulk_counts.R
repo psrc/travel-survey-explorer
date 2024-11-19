@@ -33,7 +33,7 @@ trip_topics <- data.frame(
                  "consolidated_transit_pass"),
   label =      c("Trip Mode",
                  "Trip Purpose",
-                 "Work Provides Transit Pass")
+                 "Work Offers Transit Pass")
 ) %>% setDT()
 
 person_topics <- data.frame(  
@@ -147,7 +147,9 @@ hts_data$hh %<>% setDT() %>% .[, `:=`(
 hts_data$hh %<>% merge(hts_data$person[, 
   .(hh_workers=sum(fcase(as.character(worker)=="Worker", 1, !is.na(worker), 0)), 
     hh_children=sum(fcase(as.character(age_bin3)=="Under 18 Years", 1, !is.na(age_bin3), 0))), 
-  by=hh_id], by="hh_id")
+  by=hh_id], by="hh_id") %>% 
+  .[,`:=`(hh_workers=factor(fcase(hh_workers>1, "2+", !is.na(hh_workers), as.character(hh_workers))),
+          hh_children=factor(fcase(hh_children>1, "4+", !is.na(hh_children), as.character(hh_children))))]
 
 hts_data$person %<>% setDT() %>% .[,
   race_category:=factor(
@@ -188,8 +190,8 @@ rs$household <- lapply(household_combos, explorer_stats, analysis_unit="hh")
 summary_labeled <- suppressWarnings(lapply(rs, rbindlist) %>% rbindlist())
 
 summary_filtered<-summary_labeled%>%filter(!travel_category  %in%  c("Residential Displacement", 
-                                                         "Frequency of transit use",
-                                                         "Frequency of walking",
-                                                         "Frequency of biking"))
+                                                                     "Frequency of transit use",
+                                                                     "Frequency of walking",
+                                                                     "Frequency of biking"))
 
 saveRDS(summary_filtered, 'data/hts_tbl_4_shiny.rds')

@@ -1,31 +1,13 @@
 ui <- navbarPage(
   title = tags$div(
-    tags$h1("BETA Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
+    tags$h1("Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
     tags$h4("A Dashboard for Analyzing Travel Behavior", style = "font-size: 16px; color: #76787A; margin-top: 5px; font-family: 'Poppins', sans-serif;")
   ),
   windowTitle = "Travel Survey Explorer",
   
   # Custom CSS and Google Fonts for the navbar and general styling
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
-    tags$style(HTML("
-      .full-width-table {
-        width: 100%;
-        margin-top: 20px;
-      }
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        height: calc(100vh - 150px); /* Adjust this value based on your header height */
-      }
-      #plot {
-        flex: 1;
-        margin-bottom: 20px;
-      }
-      #data {
-        flex: 0;
-      }
-    "))
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
   
   tabPanel("Dashboard",
@@ -55,11 +37,8 @@ ui <- navbarPage(
                )
              ),
              mainPanel(
-               tags$div(
-                 class = "main-content",
-                 plotlyOutput('plot'),  # Interactive Plot
-                 tags$div(gt_output('data'), class = "full-width-table")  # Expanded table
-               )
+               plotlyOutput('plot'),  # Interactive Plot
+               gt_output('data')  # Update this to gt_output for the gt table
              )
            )
   ),
@@ -102,7 +81,6 @@ ui <- navbarPage(
            )
   )
 )
-
 
 
 
