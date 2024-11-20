@@ -1,6 +1,6 @@
 ui <- navbarPage(
   title = tags$div(
-    tags$h1("Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
+    tags$h1("BETA Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
     tags$h4("A Dashboard for Analyzing Travel Behavior", style = "font-size: 16px; color: #76787A; margin-top: 5px; font-family: 'Poppins', sans-serif;")
   ),
   windowTitle = "Travel Survey Explorer",

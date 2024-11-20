@@ -16,7 +16,7 @@ server <- function(input, output, session) {
     dataset()
     plot_title <- paste(input$travel, "by", input$demographic, "for", input$survey_year)
     interactive_column_chart(dataset(), x = 'travel_attribute', 
-                             y = 'prop', fill = 'demographic_attribute', moe='prop_moe')%>%
+                             y = 'prop', fill = 'demographic_attribute')%>%
       layout(
         title = list(
           text = plot_title,
@@ -33,16 +33,17 @@ server <- function(input, output, session) {
   # Render the filtered data as a gt table
   output$data <- render_gt({
     dataset() %>%
-      select('travel_attribute', 'demographic_attribute', 'prop', 'prop_moe', 'est', 'count') %>%
+      select('travel_attribute', 'demographic_attribute', 'prop', 'est', 'count') %>%
       rename('Topic of Interest' = 'travel_attribute') %>%
       rename('Traveler Characteristic' = 'demographic_attribute') %>%
       rename('Share' = 'prop') %>%
-      rename('Share Margin of Error' = 'prop_moe') %>%
+      #rename('Share Margin of Error' = 'prop_moe') %>%
       rename('Sample Size' = 'count') %>%
       rename('Total' = 'est') %>%
       mutate('Total' = round(Total, -3)) %>%
+      #mutate(`Share Margin of Error`=ifelse(`Share Margin of Error`=='Inf', 'Missing Data, will be fixed later', `Share Margin of Error`))%>%
       gt() %>%
-      fmt_percent(columns = c('Share', 'Share Margin of Error'), decimals = 0) %>%
+      fmt_percent(columns = c('Share', decimals = 0)) %>%
       fmt_number(columns = 'Total', decimals = 0)
   })
   
