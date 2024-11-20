@@ -43,7 +43,7 @@ server <- function(input, output, session) {
       mutate('Total' = round(Total, -3)) %>%
       #mutate(`Share Margin of Error`=ifelse(`Share Margin of Error`=='Inf', 'Missing Data, will be fixed later', `Share Margin of Error`))%>%
       gt() %>%
-      fmt_percent(columns = c('Share', decimals = 0)) %>%
+      fmt_percent(columns = c('Share'), decimals=0) %>%
       fmt_number(columns = 'Total', decimals = 0)
   })
   
