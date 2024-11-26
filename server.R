@@ -31,20 +31,21 @@ server <- function(input, output, session) {
   })
   
   # Render the filtered data as a gt table
-  output$data <- render_gt({
-    dataset() %>%
-      select('travel_attribute', 'demographic_attribute', 'prop', 'est', 'count') %>%
-      rename('Topic of Interest' = 'travel_attribute') %>%
-      rename('Traveler Characteristic' = 'demographic_attribute') %>%
-      rename('Share' = 'prop') %>%
-      #rename('Share Margin of Error' = 'prop_moe') %>%
-      rename('Sample Size' = 'count') %>%
-      rename('Total' = 'est') %>%
-      mutate('Total' = round(Total, -3)) %>%
-      #mutate(`Share Margin of Error`=ifelse(`Share Margin of Error`=='Inf', 'Missing Data, will be fixed later', `Share Margin of Error`))%>%
-      gt() %>%
-      fmt_percent(columns = c('Share'), decimals=0) %>%
-      fmt_number(columns = 'Total', decimals = 0)
+  output$data <- renderDT({
+    new_colnames <- c('Topic of Interest', 'Traveler Characteristic', 'Share', 'Total', 'Sample Size')
+    
+    dataset() |> 
+      select('travel_attribute', 'demographic_attribute', 'prop', 'est', 'count') |> 
+      datatable(rownames = FALSE,
+                colnames = new_colnames,
+                options = list(pageLength = 8,
+                               lengthMenu = c(8, 10, 15, 20),
+                               dom = 'ltip' # default is 'lftipr'
+                )
+                ) |> 
+      formatPercentage(columns = 'prop', digits = 0) |> 
+      formatRound(columns = c('est', 'count'), digits = 0)
+    
   })
   
   # Render the plot
