@@ -53,7 +53,8 @@ server <- function(input, output, session) {
     plot()
   })
   
-  # Download the filtered data as an Excel file
+  # Download ----
+  ## Download the filtered data as an Excel file ----
   output$downloadData <- downloadHandler(
     filename = function() {
       # Use user selections in the filename
@@ -72,7 +73,7 @@ server <- function(input, output, session) {
     }
   )
   
-  # Download the plot as an HTML file
+  ## Download the plot as an HTML file ----
   output$downloadPlot <- downloadHandler(
     filename = function() {
       # Use user selections in the filename

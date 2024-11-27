@@ -1,7 +1,5 @@
-# global.R
 library(shiny)
 library(dplyr)
-# library(gt)
 library(DT)
 library(plotly)
 library(psrcplot)

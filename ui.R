@@ -1,20 +1,15 @@
+link_psrc <- a(
+  img(src="RegionalGem2016.png", width="30px"),
+  href = "https://psrc.org",
+  target = "_blank"
+)
+
 ui <- page_navbar(
   theme = bs_theme(base_font = "Poppins",
                    heading_font = "Sintony"),
   bg = "#630460",
   title = "PSRC Travel Survey Explorer (beta)",
   nav_spacer(),
-  # title = tags$div(
-  #   tags$h1("BETA Travel Survey Explorer", style = "font-size: 28px; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif;"),
-  #   tags$h2("A Dashboard for Analyzing Travel Behavior", style = "font-size: 16px; color: #76787A; margin-top: 5px; font-family: 'Poppins', sans-serif;")
-  # ),
-  # windowTitle = "Travel Survey Explorer",
-  
-  # Custom CSS and Google Fonts for the navbar and general styling
-  # tags$head(
-  #   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
-  # ),
-  
   nav_panel("Dashboard",
             page_sidebar(
               
@@ -23,7 +18,7 @@ ui <- page_navbar(
                                        tags$a(href = "https://www.psrc.org/our-work/household-travel-survey-program", 
                                               "PSRC Household Travel Survey", 
                                               target = "_blank"), "for more information."),
-                                     p("Contact:",tags$a(href = "mailto:schildress@psrc.org", 
+                                     p("Questions? Contact:",tags$a(href = "mailto:schildress@psrc.org", 
                                                          "Suzanne Childress", 
                                                          style = "color: #4a0048;"))
                                 ),
@@ -39,7 +34,7 @@ ui <- page_navbar(
               ),
               column(width = 12,
                      card(plotlyOutput('plot')),
-                     card(DTOutput('data'))
+                     DTOutput('data')
               )
             )
   ),
@@ -80,7 +75,8 @@ ui <- page_navbar(
                 )
               )
             )
-  )
+  ),
+  nav_item(link_psrc)
 )
 
 
