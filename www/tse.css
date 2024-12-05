@@ -1,0 +1,15 @@
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2f3030;
+}
+
+li > p:first-child {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #00716C;
+}
+
+.faq li {
+  margin-bottom: 3rem;
+}

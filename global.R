@@ -10,3 +10,7 @@ library(bslib)
 
 # Load the data (assuming the same data path is used)
 summary_tbl <- readRDS('data/hts_tbl_4_shiny.rds')
+
+# run all files in the modules sub-directory
+module_files <- list.files('modules', full.names = TRUE)
+sapply(module_files, source)

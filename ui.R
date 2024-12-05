@@ -5,27 +5,53 @@ link_psrc <- a(
 )
 
 ui <- page_navbar(
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "tse.css")
+  ),
   theme = bs_theme(base_font = "Poppins",
-                   heading_font = "Sintony"),
+                   heading_font = "Poppins"),
   bg = "#630460",
-  title = "PSRC Travel Survey Explorer (beta)",
+  title =  "PSRC Travel Survey Explorer (beta)",
   nav_spacer(),
   nav_panel("Dashboard",
             page_sidebar(
               
               sidebar = sidebar(width = "30%",
-                                card(p("This is a dashboard for analyzing travel behavior. Visit the",
+                                card(div(img(src="psrc-logo.png", width = "50%"), 
+                                         style = "display: flex; align-items: center; justify-content: center;"),
+                                     p("This is a dashboard for analyzing travel behavior in the Central Puget Sound region. Visit the",
                                        tags$a(href = "https://www.psrc.org/our-work/household-travel-survey-program", 
                                               "PSRC Household Travel Survey", 
                                               target = "_blank"), "for more information."),
                                      p("Questions? Contact:",tags$a(href = "mailto:schildress@psrc.org", 
-                                                         "Suzanne Childress", 
-                                                         style = "color: #4a0048;"))
+                                                                    "Suzanne Childress", 
+                                                                    style = "color: #4a0048;"))
                                 ),
                                 
-                                selectInput('survey_year', 'Survey Year', choices = unique(summary_tbl$survey_year), selected = 2023),
-                                selectInput('travel', 'Topic of Interest', choices = unique(summary_tbl$travel_category), selected = "Trip Mode"), 
-                                selectInput('demographic', 'Traveler Demographics or Second Topic', choices = unique(summary_tbl$demographic_category), selected = "Household Income"),
+                                selectInput('survey_year', 
+                                            'Survey Year', 
+                                            choices = unique(summary_tbl$survey_year), 
+                                            selected = 2023),
+                                selectInput('travel', 
+                                            label = tooltip(
+                                              trigger = list(
+                                                'Topic of Interest',
+                                                bsicons::bs_icon("info-circle")
+                                              ),
+                                              "Add variable definition"
+                                            ),
+                                            choices = unique(summary_tbl$travel_category), 
+                                            selected = "Trip Mode"), 
+                                selectInput('demographic', 
+                                            label = tooltip(
+                                              trigger = list(
+                                                'Traveler Demographics or Second Topic',
+                                                bsicons::bs_icon("info-circle")
+                                              ),
+                                              "Add variable definition"
+                                            ),
+                                            choices = unique(summary_tbl$demographic_category), 
+                                            selected = "Household Income"),
                                 
                                 # Download buttons
                                 downloadButton("downloadData", "Download Table as Excel"),
@@ -39,43 +65,7 @@ ui <- page_navbar(
             )
   ),
   
-  # New FAQ tab
-  nav_panel("FAQ",
-            fluidPage(
-              h3("Frequently Asked Questions"),
-              p("Here you can find answers to commonly asked questions about the Travel Survey Explorer."),
-              
-              # Example FAQs
-              tags$ul(
-                tags$li(
-                  tags$b("What is the purpose of the Travel Survey Explorer?"),
-                  tags$p("The Travel Survey Explorer is designed to help analyze travel behavior data from Puget Sound Region Residents collected in the regional travel surveys.")
-                ),
-                tags$li(
-                  tags$b("Where can I download the full Household Travel Survey dataset, not just summary tables?"),
-                  tags$p(
-                    "The full set of household travel survey responses are available on the ", 
-                    tags$a(href = "https://household-travel-survey-psregcncl.hub.arcgis.com/", 
-                           "PSRC data portal", 
-                           target = "_blank"), "."
-                  )
-                ),
-                tags$li(
-                  tags$b("Where can I learn more about the Puget Sound Regional Council Travel Survey Program?"),
-                  tags$p(
-                    "You can learn more at the ", 
-                    tags$a(href = "https://www.psrc.org/our-work/household-travel-survey-program", 
-                           "PSRC Household Travel Survey Program page", 
-                           target = "_blank"), "."
-                  )
-                ),
-                tags$li(
-                  tags$b("Why are some variables such as disability status or sexuality not available in all years?"),
-                  tags$p("Questions have been added to the survey over time to accommodate communities and topics of interest to planning. In the case of disability status and sexuality, these questions were added in 2023.")
-                )
-              )
-            )
-  ),
+  faq_ui("faq"),
   nav_item(link_psrc)
 )
 
