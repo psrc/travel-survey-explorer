@@ -9,7 +9,11 @@ ui <- page_navbar(
     tags$link(rel = "stylesheet", type = "text/css", href = "tse.css")
   ),
   theme = bs_theme(base_font = "Poppins",
-                   heading_font = "Poppins"),
+                   heading_font = "Poppins",
+                   bg = "white",
+                   fg = "black",
+                   primary = "#91268F"
+                   ),
   bg = "#630460",
   title =  "PSRC Travel Survey Explorer (beta)",
   nav_spacer(),
@@ -33,34 +37,40 @@ ui <- page_navbar(
                                             choices = unique(summary_tbl$survey_year), 
                                             selected = 2023),
                                 selectInput('travel', 
-                                            label = tooltip(
-                                              trigger = list(
-                                                'Topic of Interest',
-                                                bsicons::bs_icon("info-circle")
-                                              ),
-                                              "Add variable definition"
-                                            ),
+                                            'Topic of Interest',
                                             choices = unique(summary_tbl$travel_category), 
                                             selected = "Trip Mode"), 
                                 selectInput('demographic', 
-                                            label = tooltip(
-                                              trigger = list(
-                                                'Traveler Demographics or Second Topic',
-                                                bsicons::bs_icon("info-circle")
-                                              ),
-                                              "Add variable definition"
-                                            ),
+                                            'Traveler Demographics or Second Topic',
                                             choices = unique(summary_tbl$demographic_category), 
                                             selected = "Household Income"),
                                 
-                                # Download buttons
-                                downloadButton("downloadData", "Download Table as Excel"),
-                                downloadButton("downloadPlot", "Download Plot as HTML"),
+                                # card for variable definitions & download buttons
+                                accordion(
+                                  open = FALSE,
+                                  accordion_panel(
+                                    "Defintions",
+                                    icon = bsicons::bs_icon("book"),
+                                    uiOutput('var_def_ui'),
+                                  ),
+                                  accordion_panel(
+                                    "Download",
+                                    icon = bsicons::bs_icon('download'),
+                                    downloadButton("downloadData", "Download Table as Excel"),
+                                    downloadButton("downloadPlot", "Download Plot as HTML")
+                                  )
+                                ),
+                                
+                                
                                 
               ),
               column(width = 12,
-                     card(plotlyOutput('plot')),
-                     DTOutput('data')
+                     card(withSpinner(plotlyOutput('plot'), 
+                                      type = 4, 
+                                      color = sample(psrc_colors$psrc_light, 1))),
+                     withSpinner(DTOutput('data'), 
+                                 type = 4, 
+                                 color = sample(psrc_colors$psrc_light, 1))
               )
             )
   ),

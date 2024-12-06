@@ -13,3 +13,12 @@ li > p:first-child {
 .faq li {
   margin-bottom: 3rem;
 }
+
+.definitions div > p:first-child {
+  font-weight: 600;
+}
+
+.definitions div > p:nth-child(2) {
+  font-size: .9rem;
+}
+

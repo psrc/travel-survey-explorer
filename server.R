@@ -1,5 +1,30 @@
 server <- function(input, output, session) {
   
+  output$var_def_ui <- renderUI({
+    # display variable definitions
+    
+    t <- var_def_tbl |> 
+      filter(variables_union == input$travel) |> 
+      pull(definition)
+    
+    d <- var_def_tbl |> 
+      filter(variables_union == input$demographic)|> 
+      pull(definition)
+    
+    card(
+      full_screen = TRUE,
+      div(class = "definitions",
+        div(p(input$travel), p(t))
+      ),
+      
+      div(class = "definitions",
+        div(p(input$demographic), p(d))
+      ) # end div
+    ) # end card
+    
+    
+  })
+  
   # Reactive dataset
   dataset <- reactive({
     req(input$travel, input$demographic, input$survey_year)  # Ensure inputs are available
@@ -42,7 +67,7 @@ server <- function(input, output, session) {
                                lengthMenu = c(8, 10, 15, 20),
                                dom = 'ltip' # default is 'lftipr'
                 )
-                ) |> 
+      ) |> 
       formatPercentage(columns = 'prop', digits = 0) |> 
       formatRound(columns = c('est', 'count'), digits = 0)
     
