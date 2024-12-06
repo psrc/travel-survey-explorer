@@ -4,12 +4,12 @@ server <- function(input, output, session) {
     # display variable definitions
     
     t <- var_def_tbl |> 
-      filter(variables_union == input$travel) |> 
-      pull(definition)
+        filter(variables_union == input$travel) |> 
+        pull(definition)
     
     d <- var_def_tbl |> 
-      filter(variables_union == input$demographic)|> 
-      pull(definition)
+        filter(variables_union == input$demographic)|> 
+        pull(definition)
     
     card(
       full_screen = TRUE,

@@ -1,16 +1,15 @@
 library(data.table)
-library(stringr)
-library(travelSurveyTools)
-library(psrcelmer)
-library(dplyr)
+# library(travelSurveyTools)
+# library(psrcelmer)
 library(psrcplot)
 library(tidyverse)
-library(table1)
-library(psrc.travelsurvey)
+# library(table1)
+# library(psrc.travelsurvey)
 
 
 # open rds file to see format
-hts_rds <- readRDS('T:/2024December/christy/hts_tbl_4_shiny.rds')
+# hts_rds <- readRDS('T:/2024December/christy/hts_tbl_4_shiny.rds')
+hts_rds <- readRDS('data/hts_tbl_4_shiny.rds')
 
 # view fields of interest
 unique(hts_rds$demographic_category)
@@ -21,7 +20,7 @@ unique(hts_rds$travel_category)
 hts_data_demo <- unique(hts_rds$demographic_category)
 hts_data_travel <- unique(hts_rds$travel_category)
 
-variables_union <- union_all(hts_data_demo, hts_data_travel)
+variables_union <- union_all(hts_data_demo, hts_data_travel) |> unique()
 
 var <- as.data.frame(variables_union)
 
@@ -54,4 +53,5 @@ shiny_variables
 class(shiny_variables)
 
 # write rds
-write_rds(shiny_variables, "T:/2024December/Mary/shinyapp_var_def.rds")
+# write_rds(shiny_variables, "T:/2024December/Mary/shinyapp_var_def.rds")
+write_rds(shiny_variables, "data/shinyapp_var_def.rds")
