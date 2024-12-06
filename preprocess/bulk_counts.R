@@ -189,9 +189,15 @@ rs$household <- lapply(household_combos, explorer_stats, analysis_unit="hh")
 #rs$vmt_rate  <- lapply(trip_topics$report_var, explorer_stats, stat_var="vmt_wtd")
 summary_labeled <- suppressWarnings(lapply(rs, rbindlist) %>% rbindlist())
 
-summary_filtered <- summary_labeled[!travel_category %in% c("Residential Displacement", 
-                                                            "Frequency of transit use",
-                                                            "Frequency of walking",
-                                                            "Frequency of biking")]
+summary_filtered <- summary_labeled %>% 
+  .[!travel_category %in% c("Residential Displacement", 
+                            "Frequency of transit use",
+                            "Frequency of walking",
+                            "Frequency of biking",
+                            "Transit Access Mode")] %>%
+  .[!(demographic_category=='Person Race' & 
+      demographic_attribute %in% c('Child', 
+                                   'Two or More Races non-Hispanic',
+                                   'Missing/No response'))]
 
 saveRDS(summary_filtered, 'data/hts_tbl_4_shiny.rds')
